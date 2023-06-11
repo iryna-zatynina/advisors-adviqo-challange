@@ -10,7 +10,7 @@ interface AdvisorCardProps {
         reviews: number,
         language: string,
         status: string,
-        lastReview: string
+        onSiteSince: string
     }
 }
 
@@ -21,7 +21,7 @@ const AdvisorCard = ({advisor}: AdvisorCardProps) => {
             <span className="fullName">{advisor.fullName}</span>
             <span>{advisor.language}</span>
             <div className="reviews"><Start /><span >{advisor.reviews}</span><Start /></div>
-            <span>{advisor.lastReview}</span>
+            <span>{advisor.onSiteSince}</span>
             <span className={cn("status", {
                 ["online"]: advisor.status === "online"
             })}>{advisor.status}</span>
