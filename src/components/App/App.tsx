@@ -1,24 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AdvisorCard from '../AdvisorCard/AdvisorCard';
+import { faker } from '@faker-js/faker';
+
+
 
 function App() {
+  const advisor = {
+    icon: faker.image.avatarLegacy(), 
+    fullName: faker.person.fullName(),
+    status: faker.helpers.arrayElement(['online', 'offline']),
+    reviews: faker.number.int(1000),
+    lastReview: faker.date.past({ years: 3, refDate: '2023-06-11' }).toDateString().slice(3),
+    language: faker.helpers.arrayElement([
+      "German",
+      "English",
+      "Spanish",
+      "Chinese",
+      "Ukrainian",
+      "French",
+      "Swedish",
+      "Danish",
+    ]),
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AdvisorCard advisor={advisor}/>
     </div>
   );
 }
