@@ -2,8 +2,11 @@ import React from 'react';
 import AdvisorCard from '../AdvisorCard/AdvisorCard';
 import { faker } from '@faker-js/faker';
 import TableHeader from '../TableHeader/TableHeader';
+import axios from 'axios';
+import api from "../../axios"
 
 function App() {
+
     const advisor = {
       icon: faker.image.avatarLegacy(), 
       fullName: faker.person.fullName(),
@@ -22,11 +25,16 @@ function App() {
       ])
   }
 
+  const addAdvisors = () => {
+    api.post('api/add/new-advisors', {...advisor})
+    .then(response => console.log(response))
+  }
 
   return (
     <div className="App">
-      <TableHeader />
-      <AdvisorCard advisor={advisor}/>
+      <button onClick={addAdvisors}>click</button>
+      {/* <TableHeader />
+      <AdvisorCard advisor={advisor}/> */}
     </div>
   );
 }
