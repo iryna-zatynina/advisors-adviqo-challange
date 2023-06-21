@@ -3,6 +3,19 @@
     gap: 10px;
     align-items: center;
 
+    .form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .ant-form-item {
+            margin: 0;
+            .ant-form-item-control-input-content {
+                display: flex;
+                gap: 10px;
+            }
+        }
+    }
+
     .select {
         border-radius: 10px;
         .ant-select-selection-placeholder {

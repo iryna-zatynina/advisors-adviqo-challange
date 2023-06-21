@@ -1,87 +1,88 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import "./App.scss";
-import AdvisorCard from '../AdvisorCard/AdvisorCard';
-import { faker } from '@faker-js/faker';
-import TableHeader from '../TableHeader/TableHeader';
-import api from "../../axios"
-import { IAdvisor, IFilter } from '../../interfaces/interfaces';
-import { LANGUAGES, STATUSES } from '../../shared/variables';
-import Filters from '../Filters/Filters';
-import Loader from '../Loader/Loader';
-
+import AdvisorCard from "../AdvisorCard/AdvisorCard";
+import TableHeader from "../TableHeader/TableHeader";
+import api from "../../axios";
+import { IAdvisor, IFilter } from "../../interfaces/interfaces";
+import Filters from "../Filters/Filters";
+import Loader from "../Loader/Loader";
 
 function App() {
   const [advisors, setAdvisors] = useState<IAdvisor[]>([]);
-  const [filters, setFilters] = useState<IFilter[]>([]);
-  const [loading, setLoading] = useState<boolean>(false)
+  const [filters, setFilters] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [limit, setLimit] = useState<number>(10);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [sortBy, setSortBy] = useState<string>("");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const getAdvisors = useCallback(() => {
+    setLoading(true);
+    api
+      .get("api/advisors", {
+        params: {
+          limit: limit,
+          language: filters.language,
+          status: filters.status,
+          sortBy: sortBy
+        },
+      })
+      .then((res) => {
+        const data = res.data.advisors;
+        setAdvisors(data);
+
+        setLoading(false);
+        setHasMore(data.length < res.data.count);
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }, [filters, limit, sortBy]);
 
   useEffect(() => {
-    getAdvisors();
-  }, [filters])
+      getAdvisors();
+  }, [filters, limit, sortBy, getAdvisors]);
 
-  const addAdvisors = () => {
-    for (let i = 0; i < 2; i++) {
-      api.post('api/add/advisors', {
-        icon: faker.image.avatarLegacy(), 
-        fullName: faker.person.fullName(),
-        status: faker.helpers.arrayElement(STATUSES),
-        reviews: faker.number.int(1000),
-        onSiteSince: faker.date.past({ years: 3, refDate: '2023-06-11' }).toDateString().slice(3),
-        language: faker.helpers.arrayElement(LANGUAGES)
-      }, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
+  const handleScroll = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const isBottomOfContainer =
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 1;
+
+    if (isBottomOfContainer && hasMore) {
+      setLimit((prevLimit) => prevLimit + 10);
     }
-  }
+  }, [hasMore, setLimit]);
 
-  const getAdvisors = () => {
-    setLoading(true)
-    api.get('api/advisors')
-    .then(res => {
-      const data = res.data;
-      if (filters.length !== 0) {
-        console.log(filters);
-        const filteredAdvisors = data.filter(advisor => 
-          filters.reduce((acc, filter) => {
-            return acc && advisor[filter.key] === filter.value}, true)
-        )
-      setAdvisors(filteredAdvisors)
-      } else {
-        setAdvisors(data)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
       }
-      setLoading(false);
-    })
-    .catch(error => {
-      throw new Error(error)
-    })
-  }
-  
-
-  const sortAdvisorsByReviewCount = (order: 'ascending' | 'descending'): IAdvisors[] => {
-    const sortedAdvisors = [...advisors];
-  
-    sortedAdvisors.sort((a, b) => {
-      if (order === 'ascending') {
-        return a.reviews - b.reviews;
-      } else {
-        return b.reviews - a.reviews;
-      }
-    });
-  
-    setAdvisors(sortedAdvisors);
-  }
+    };
+  }, [handleScroll]);
 
   return (
     <div className="App">
-      <Filters filters={filters} setFilters={setFilters}/>
-      <TableHeader sortAdvisors={sortAdvisorsByReviewCount}/>
-      {advisors.length !== 0 
-        ? advisors.map(adv => <AdvisorCard key={adv._id} advisor={adv}/>)
-        : <div className='no-message'>No advisors</div>}
-        {loading && <Loader />}
+      <div className="container">
+        <Filters filters={filters} setFilters={setFilters} />
+        <TableHeader sortAdvisors={setSortBy} />
+        <div ref={containerRef} className="advisors">
+          {advisors.length !== 0 ? (
+            advisors.map((adv) => <AdvisorCard key={adv._id} advisor={adv} />)
+          ) : (
+            <div className="no-message">No advisors</div>
+          )}
+        </div>
+      </div>
+      {loading && <Loader />}
     </div>
   );
 }

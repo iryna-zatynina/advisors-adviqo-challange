@@ -1,4 +1,14 @@
 .App {
+    position: relative;
+    .container {
+        padding: 20px;
+
+
+        .advisors {
+            height: calc(100vh - 140px);
+            overflow-y: scroll;
+        }
+    } 
     .no-message {
         width: fit-content;
         margin: 50px auto 0 auto;
