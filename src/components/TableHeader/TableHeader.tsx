@@ -3,7 +3,11 @@ import React from "react";
 import "./TableHeader.scss";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 
-const TableHeader = ({sortAdvisors}) => {
+interface  TableHeaderProps {
+    sortAdvisors: (x: string) => void;
+}
+
+const TableHeader = ({sortAdvisors} :TableHeaderProps):JSX.Element => {
     return (
         <div className="TableHeader">
             <span className="name">Name</span>

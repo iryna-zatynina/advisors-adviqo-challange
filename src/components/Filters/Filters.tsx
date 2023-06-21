@@ -1,15 +1,15 @@
-// @ts-nocheck
+
 import React from "react";
 import "./Filters.scss";
 import { LANGUAGES, STATUSES } from "../../shared/variables";
 import { Select, Button, Form } from "antd";
 import { IFilter } from "../../interfaces/interfaces";
 
-interface FiLtersProps {
-  filters: IFilter[];
-  setFilters: (x: IFilter) => void;
+interface FiltersProps {
+    setFilters: (updateFilter: (prevFilter: IFilter) => IFilter) => void;
 }
-const Filters = ({ filters, setFilters }: FiLtersProps): JSX.Element => {
+
+const Filters = ({ setFilters }: FiltersProps) => {
   const { Option } = Select;
   const [form] = Form.useForm();
 
@@ -18,15 +18,14 @@ const Filters = ({ filters, setFilters }: FiLtersProps): JSX.Element => {
       [key]: value,
     };
 
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ...newFilter,
-    }));
+    setFilters((prevFilter) => ({ ...prevFilter, ...newFilter }));
   };
 
   const onReset = () => {
     form.resetFields();
-    setFilters({});
+    setFilters(() => 
+       ({ language: "", status: "" })
+    );
   };
 
   return (

@@ -9,7 +9,6 @@ export interface IAdvisor {
 }
 
 export interface IFilter {
-    push(newFilter: { title: string; value: string; }): unknown;
-    title: string,
-    value: string
+    language: string,
+    status: string
 }

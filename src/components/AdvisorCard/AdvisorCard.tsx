@@ -8,7 +8,7 @@ interface AdvisorCardProps {
     advisor: IAdvisor
 }
 
-const AdvisorCard = ({advisor}: AdvisorCardProps) => {
+const AdvisorCard = ({advisor}: AdvisorCardProps):JSX.Element => {
     return (
         <div className="AdvisorCard">
             <span className="avatar"><img src={advisor.icon} alt="icon"/></span>

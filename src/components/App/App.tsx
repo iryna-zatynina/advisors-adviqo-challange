@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import "./App.scss";
 import AdvisorCard from "../AdvisorCard/AdvisorCard";
@@ -10,7 +9,7 @@ import Loader from "../Loader/Loader";
 
 function App() {
   const [advisors, setAdvisors] = useState<IAdvisor[]>([]);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState<IFilter>({language: "", status: ""});
   const [loading, setLoading] = useState<boolean>(false);
   const [limit, setLimit] = useState<number>(10);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -72,7 +71,7 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <Filters filters={filters} setFilters={setFilters} />
+        <Filters setFilters={setFilters} />
         <TableHeader sortAdvisors={setSortBy} />
         <div ref={containerRef} className="advisors">
           {advisors.length !== 0 ? (
