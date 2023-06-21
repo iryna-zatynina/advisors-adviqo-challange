@@ -15,7 +15,7 @@ const AdvisorCard = ({advisor}: AdvisorCardProps) => {
             <span className="fullName">{advisor.fullName}</span>
             <span>{advisor.language}</span>
             <div className="reviews"><Start /><span >{advisor.reviews}</span><Start /></div>
-            <span>{advisor.onSiteSince}</span>
+            <span className="onSiteSince">{advisor.onSiteSince}</span>
             <span className={cn("status", {
                 "online": advisor.status === "online"
             })}>{advisor.status}</span>

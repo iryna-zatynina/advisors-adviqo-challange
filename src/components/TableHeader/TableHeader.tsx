@@ -5,7 +5,7 @@ import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 
 const TableHeader = ({sortAdvisors}) => {
     return (
-        <div className="tableHeader">
+        <div className="TableHeader">
             <span className="name">Name</span>
             <span>Language</span>
             <span className="reviews">
